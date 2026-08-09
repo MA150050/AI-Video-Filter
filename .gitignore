@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# AI model files
+models/*
+!models/.gitkeep
+
+# User input/output
+input/*
+!input/.gitkeep
+
+output/*
+!output/.gitkeep
+
+# Temporary files
+temp/*
+!temp/.gitkeep
+
+# Logs
+logs/*
+!logs/.gitkeep
+
+# Runtime files
+*.progress.json
+
+# Python tooling
+.pytest_cache/
+.mypy_cache/
+
+# Environment / secrets
+.env
+.env.*
+
+# OS
+Thumbs.db
+.DS_Store

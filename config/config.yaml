@@ -1,0 +1,99 @@
+app:
+  name: "AI Video Filter"
+  version: "0.3.1"
+  output_suffix: "_Clean"
+  overwrite_output: false
+  keep_temp: true
+
+runtime:
+  device: "cuda"
+  ffmpeg_path: "runtime/ffmpeg/bin/ffmpeg.exe"
+  ffprobe_path: "runtime/ffmpeg/bin/ffprobe.exe"
+  offline_after_install: true
+
+models:
+  nsfw:
+    id: "viddexa/nsfw-detection-2-mini"
+    local_dir: "models/nsfw"
+    enabled: true
+
+  xclip:
+    id: "microsoft/xclip-base-patch16"
+    local_dir: "models/xclip"
+    enabled: true
+    frames: 8
+    clip_seconds: 4.0
+    stride_seconds: 2.0
+    labels:
+      - "a normal movie scene"
+      - "two people kissing"
+      - "two people making out"
+      - "two people hugging intimately"
+      - "two people embracing"
+      - "a sexual or intimate scene"
+      - "a nude scene"
+      - "a romantic but non-intimate scene"
+      - "people talking"
+      - "people walking"
+      - "people fighting"
+
+  person:
+    enabled: true
+    filename: "yolo26n.pt"
+    local_dir: "models/person"
+    confidence: 0.35
+    iou: 0.55
+    tracker: "bytetrack.yaml"
+    imgsz: 640
+
+sampling:
+  nsfw_fps: 1.5
+  tracking_fps: 3.0
+  suspicious_tracking_fps: 6.0
+  min_scene_seconds: 1.5
+  xclip_clip_seconds: 4.0
+  xclip_stride_seconds: 2.0
+  xclip_frames: 8
+
+interaction:
+  enabled: true
+  intimate_distance_ratio: 0.42
+  very_close_distance_ratio: 0.27
+  close_duration_seconds: 1.5
+  kissing_face_ratio: 0.32
+  multi_person_required: true
+  normal_hug_max_score: 0.55
+
+decision:
+  nsfw:
+    porn: 0.82
+    hentai: 0.82
+    sexy: 0.94
+
+  xclip:
+    kissing: 0.82
+    making_out: 0.86
+    intimate_hug: 0.88
+    intimate_scene: 0.88
+    nude_scene: 0.84
+
+  interaction:
+    intimate_hug: 0.72
+    very_close: 0.82
+    face_to_face: 0.78
+
+  temporal_min_hits: 2
+  temporal_window_seconds: 5.0
+  verification_margin: 0.08
+
+buffer:
+  before_seconds: 4.0
+  after_seconds: 5.0
+  merge_gap_seconds: 1.5
+
+encoding:
+  video_codec: "libx264"
+  preset: "medium"
+  crf: 18
+  audio_codec: "aac"
+  audio_bitrate: "192k"
